@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Productivity Agent - 10 Slide Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #0b0f19; color: #f1f5f9; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        /* Top bar */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 32px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px);
+            border-bottom: 1px solid #1e293b;
+        }
+        .logo { font-size: 18px; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+        .meta-pill { background: #1e293b; color: #94a3b8; padding: 6px 14px; border-radius: 20px; font-size: 13px; border: 1px solid #334155; }
+        
+        /* Slide viewport */
+        .stage { flex: 1; display: flex; justify-content: center; align-items: center; padding: 32px; }
+        .slide {
+            width: 100%; max-width: 1100px; height: 580px; background: #111827;
+            border: 1px solid #1f2937; border-radius: 20px; padding: 48px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: none; flex-direction: column; justify-content: space-between;
+            position: relative; overflow: hidden;
+        }
+        .slide.active { display: flex; animation: fadeIn 0.3s ease-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .badge {
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+            color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 6px 12px;
+            border-radius: 6px; display: inline-block; margin-bottom: 12px; border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+        h2 { font-size: 32px; font-weight: 800; color: #ffffff; margin-bottom: 8px; line-height: 1.2; }
+        h3 { font-size: 16px; font-weight: 500; color: #94a3b8; margin-bottom: 24px; }
+        
+        .content-box {
+            background: #1e293b; border: 1px solid #334155; border-radius: 12px;
+            padding: 24px 32px; flex: 1; display: flex; flex-direction: column; justify-content: center;
+        }
+        ul { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+        li {
+            font-size: 16px; line-height: 1.5; color: #e2e8f0; display: flex; align-items: flex-start; gap: 12px;
+        }
+        li::before {
+            content: "✦"; color: #38bdf8; font-weight: bold; font-size: 14px; margin-top: 2px;
+        }
+        
+        .code-callout {
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; background: #0f172a;
+            color: #38bdf8; padding: 2px 6px; border-radius: 4px;
+        }
+        
+        /* Navigation Controls */
+        footer {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 32px; background: rgba(15, 23, 42, 0.85); border-top: 1px solid #1e293b;
+        }
+        .nav-btn {
+            background: #1e293b; color: #ffffff; border: 1px solid #334155; padding: 10px 24px;
+            border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .nav-btn:hover { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+        .counter { font-size: 14px; color: #94a3b8; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">⚡ AIONOS Batch 2027 | Executive Productivity Agent</div>
+    <div class="meta-pill">Candidate: Aniruddh Mishra (Bennett University)</div>
+</header>
+
+<div class="stage">
+    <!-- Slide 1 -->
+    <div class="slide active" id="slide-1">
+        <div>
+            <span class="badge">Slide 01 • Overview</span>
+            <h2>Executive Productivity Agent</h2>
+            <h3>Autonomous Context Synthesis, Commitment Tracking & Calendar Intelligence</h3>
+        </div>
+        <div class="content-box">
+            <ul>
+                <li><strong>Target User:</strong> Arjun Malhotra, VP Sales (Veridian Corp).</li>
+                <li><strong>Scenario Timeline:</strong> Monday 21 Sep – Friday 25 Sep 2026.</li>
+                <li><strong>Built By:</strong> Aniruddh Mishra (Bennett University, B.Tech CSE, Batch 2027).</li>
+                <li><strong>Technical Stack:</strong> FastAPI, Uvicorn, Streamlit, LangChain, Google Gemini, ChromaDB, Sentence-Transformers, SQLite.</li>
+                <li><strong>Deployment Ready:</strong> Serverless on Vercel (<span class="code-callout">api/index.py</span>) + Interactive Streamlit Cloud.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="slide" id="slide-2">
+        <div>
+            <span class="badge">Slide 02 • Problem Statement</span>
+            <h2>The Executive Productivity Challenge</h2>
+            <h3>Navigating Information Overload, Drift & Organizational Blind Spots</h3>
+        </div>
+        <div class="content-box">
+            <ul>
+                <li><strong>Multi-Channel Fragmentation:</strong> Directives, deliverables, and time commitments are scattered across meeting discussions, async email chains, voice notes, and calendar blockers.</li>
+                <li><strong>Dynamic Deadline Slippage:</strong> Commitments shift quietly over time (e.g., Vendor list deferred across Monday, Tuesday, and Wednesday).</li>
+                <li><strong>Dangerous Assumptions:</strong> High-risk tasks lack explicit ownership and fall through the cracks (e.g., the Mumbai Office Lease renewal).</li>
+                <li><strong>Need for Absolute Grounding:</strong> Executive decisions require zero-hallucination factual fidelity grounded exclusively in verified corporate records.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="slide" id="slide-3">
+        <div>
+            <span class="badge">Slide 03 • Data Pack Analysis</span>
+            <h2>Assignment 1 Data Pack Architecture</h2>
+            <h3>Strict Scenario Scope: 21–25 September 2026</h3>
+        </div>
+        <div class="content-box">
+            <ul>
+                <li><strong>Meeting Transcript:</strong> Leadership Sync (Mon 21 Sep, 9:00–9:35 AM) with Arjun, Neha, Raghav, and Divya establishing initial commitments.</li>
+                <li><strong>4 Team Calendars:</strong> Complete schedules for Arjun Malhotra, Neha Kapoor, Raghav Sethi, and Divya Rao.</li>
+                <li><strong>5 Email Threads (25 Emails):</strong> Vendor List (5), Q3 Campaign Deck (5), Call Reschedule (5), Expense Variance Report (5), Mumbai Lease Renewal (5).</li>
+                <li><strong>2 Voice Notes:</strong> Personal audio reminders recorded by Arjun (treated as self-commitments, not external requests).</li>
+                <li><strong>Anti-Hallucination Scope:</strong> The agent restricts all inferences strictly to facts explicitly present in these artifacts.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="slide" id="slide-4">
+        <div>
+            <span class="badge">Slide 04 • System Capabilities</span>
+            <h2>Core Functional Capabilities</h2>
+            <h3>Empowering the VP of Sales with Real-Time Operational Clarity</h3>
+        </div>
+        <div class="content-box">
+            <ul>
+                <li><strong>Real-Time Commitment Ledger:</strong> Synthesizes deliverables, owners, deadlines, and statuses across all 5 workstreams into an executive dashboard.</li>
+                <li><strong>Automated Blocker & Risk Escalation:</strong> Detects unassigned responsibilities and overdue promises before critical board sessions.</li>
+                <li><strong>Calendar Availability Engine:</strong> Computes available meeting windows while strictly respecting blocked focus periods and board prep sessions.</li>
+                <li><strong>Source-Grounded Executive Q&A:</strong> Natural language assistant providing instant status reports backed by verifiable citations.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 5 -->
+    <div class="slide" id="slide-5">
+        <div>
+            <span class="badge">Slide 05 • System Architecture</span>
+            <h2>End-to-End System Architecture</h2>
+            <h3>Hybrid Pipeline: Deterministic Guardrails + ChromaDB RAG + LangChain LLM</h3>
+        </div>
+        <div class="content-box">
+            <ul>
+                <li><strong>Ingestion & Parsing:</strong> Pydantic models validate raw transcripts, emails, calendars, and audio transcripts from <span class="code-callout">data/source_data.json</span>.</li>
+                <li><strong>ChromaDB Vector Store:</strong> Sentence-Transformers (<span class="code-callout">all-MiniLM-L6-v2</span>) generate dense vector embeddings for semantic document search.</li>
+                <li><strong>Deterministic Grounding Engine:</strong> Enforces zero-invention guardrails on critical compliance and unowned legal items.</li>
+                <li><strong>Serving & Observability:</strong> FastAPI REST API + Streamlit Dashboard + SQLite (<span class="code-callout">agent_audit.db</span>) recording complete query history.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 6 -->
+    <div class="slide" id="slide-6">
+        <div>
+            <span class="badge">Slide 06 • Reasoning & Drift Tracking</span>
+            <h2>Tracking Dynamic Deadline Drift</h2>
+            <h3>Case Study: The Vendor List Commitment to Raghav Sethi</h3>
+        </div>
+        <div class="content-box">
+            <ul>
+                <li><strong>Monday 9:00 AM Sync:</strong> Arjun states: "I told Raghav I'd send him the updated vendor list... by end of day tomorrow."</li>
+                <li><strong>Monday 5:40 PM Email:</strong> Arjun delays: "Running behind, will send first thing tomorrow morning instead."</li>
+                <li><strong>Tuesday 6:30 PM Email:</strong> Arjun delays again: "Got pulled into board prep — will send by tomorrow (Wednesday) morning for sure."</li>
+                <li><strong>Wednesday 8:45 AM Email:</strong> Raghav checks in: "Just checking — still good for this morning?"</li>
+                <li><strong>Agent Verdict:</strong> Status is correctly classified as <strong style="color:#fcd34d;">AT RISK / OPEN</strong> because the deliverable was repeatedly postponed and never confirmed sent.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 7 -->
+    <div class="slide" id="slide-7">
+        <div>
+            <span class="badge">Slide 07 • Anti-Hallucination Guardrails</span>
+            <h2>Handling Ambiguity & Anti-Hallucination</h2>
+            <h3>Case Study: The Mumbai Office Lease Renewal</h3>
+        </div>
+        <div class="content-box">
+            <ul>
+                <li><strong>The Potential Trap:</strong> Facilities issued two company-wide alerts for signature due Friday 25 Sep. Divya suggested in sync that Facilities typically owns it.</li>
+                <li><strong>Executive Command:</strong> Arjun explicitly intervened: <em style="color:#38bdf8;">"Okay, flag it, don't assume."</em></li>
+                <li><strong>Ground Truth Verification:</strong> Raghav confirms on Thursday 4:45 PM that it is still unowned with 1 day left. Arjun's voice memo states someone must own it and it's not him.</li>
+                <li><strong>Agent Decision:</strong> The agent strictly outputs <strong style="color:#f87171;">UNASSIGNED / CRITICAL BLOCKER</strong> and refuses to fabricate Facilities or anyone else as the owner.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 8 -->
+    <div class="slide" id="slide-8">
+        <div>
+            <span class="badge">Slide 08 • Calendar Intelligence</span>
+            <h2>Deterministic Calendar Intelligence</h2>
+            <h3>Accurate Meeting Window Discovery & Priority Protection</h3>
+        </div>
+        <div class="content-box">
+            <ul>
+                <li><strong>Protected Focus Periods:</strong> Respects Board Prep Session (9:00–10:00 AM) and Hiring Panel (4:00–5:00 PM) on Thursday 24 Sep.</li>
+                <li><strong>Meeting Synchronization:</strong> Coordinates Arjun's schedule with Neha's Q3 Campaign Deck Review locked for Thursday 9:30 AM.</li>
+                <li><strong>Deterministic Free Slots:</strong> Accurately computes available 30-minute intervals within standard 09:00–18:00 working hours.</li>
+                <li><strong>Multi-Attendee Cross-Check:</strong> Algorithmic intersection logic verifies simultaneous availability across Arjun, Neha, Raghav, and Divya.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 9 -->
+    <div class="slide" id="slide-9">
+        <div>
+            <span class="badge">Slide 09 • Evaluation & Verification</span>
+            <h2>Rigorous Testing & Evaluation Metrics</h2>
+            <h3>Ensuring Production-Grade Groundedness & Traceability</h3>
+        </div>
+        <div class="content-box">
+            <ul>
+                <li><strong>100% Groundedness Score:</strong> All deliverables directly map to explicit text in the source data pack without extrapolation.</li>
+                <li><strong>Safe Ambiguity Handling:</strong> Evaluated on trick questions regarding lease ownership, passing with explicit unassigned flags.</li>
+                <li><strong>SQLite Query Auditability:</strong> Every prompt, response, model type, and timestamp is persisted in <span class="code-callout">agent_audit.db</span>.</li>
+                <li><strong>High-Availability Fallback:</strong> Deterministic engine guarantees full functionality even if external LLM APIs experience downtime.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 10 -->
+    <div class="slide" id="slide-10">
+        <div>
+            <span class="badge">Slide 10 • Production Roadmap</span>
+            <h2>Production Readiness & Enterprise Scope</h2>
+            <h3>Scalable Architecture for Global Enterprise Workforces</h3>
+        </div>
+        <div class="content-box">
+            <ul>
+                <li><strong>Vercel Serverless Ready:</strong> Packaged with <span class="code-callout">vercel.json</span> and <span class="code-callout">api/index.py</span> for rapid, low-latency deployment.</li>
+                <li><strong>One-Command Execution:</strong> Instantly launchable locally with <span class="code-callout">run.bat</span> or <span class="code-callout">run.ps1</span>.</li>
+                <li><strong>Enterprise Connectors (Roadmap):</strong> Future integration with Microsoft Graph API and Google Workspace via OAuth2.</li>
+                <li><strong>Human-in-the-Loop Governance:</strong> Strict two-phase authorization before any automated calendar booking or outbound email dispatch.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <button class="nav-btn" onclick="prevSlide()">◀ Previous</button>
+    <div class="counter" id="slide-counter">Slide 1 of 10</div>
+    <button class="nav-btn" onclick="nextSlide()">Next ▶</button>
+</footer>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 10;
+    
+    function updateSlide() {
+        for (let i = 1; i <= totalSlides; i++) {
+            document.getElementById('slide-' + i).classList.remove('active');
+        }
+        document.getElementById('slide-' + currentSlide).classList.add('active');
+        document.getElementById('slide-counter').innerText = `Slide ${currentSlide} of ${totalSlides}`;
+    }
+    
+    function nextSlide() {
+        if (currentSlide < totalSlides) {
+            currentSlide++;
+            updateSlide();
+        }
+    }
+    
+    function prevSlide() {
+        if (currentSlide > 1) {
+            currentSlide--;
+            updateSlide();
+        }
+    }
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+        if (e.key === 'ArrowLeft') prevSlide();
+    });
+</script>
+</body>
+</html>
