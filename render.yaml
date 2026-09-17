@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: executive-productivity-agent
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements-local.txt
+    startCommand: streamlit run app/ui.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: PYTHON_VERSION
+        value: 3.10.12
