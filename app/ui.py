@@ -1,3 +1,11 @@
+import sys
+from pathlib import Path
+
+# Ensure repository root is on sys.path for Streamlit Cloud & remote containers
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 import streamlit as st
 import json
 import requests
@@ -10,7 +18,8 @@ from app.config import (
     ASSIGNMENT_TITLE,
     TARGET_USER,
     SCENARIO_WEEK,
-    BACKEND_API_URL
+    BACKEND_API_URL,
+    DATA_PATH
 )
 from app.core import (
     get_executive_brief,
@@ -459,7 +468,7 @@ with tab4:
     
     ev_choice = st.selectbox("Select Evidence View:", ["Meeting Transcript", "Email Threads", "Voice Notes", "SQLite Audit Log"])
     
-    with open("data/source_data.json", "r", encoding="utf-8") as f:
+    with open(DATA_PATH, "r", encoding="utf-8") as f:
         raw_data = json.load(f)
         
     if ev_choice == "Meeting Transcript":
