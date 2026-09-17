@@ -28,7 +28,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for rich executive styling
+# Custom CSS for rich executive styling (Theme-proof with explicit contrast)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -64,56 +64,79 @@ st.markdown("""
     
     .stat-badge {
         display: inline-block;
-        padding: 4px 12px;
+        padding: 5px 14px;
         border-radius: 20px;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 700;
+        letter-spacing: 0.3px;
         margin-right: 8px;
     }
     
     .badge-critical {
-        background-color: #fee2e2;
-        color: #991b1b;
-        border: 1px solid #f87171;
+        background-color: #7f1d1d;
+        color: #fecaca;
+        border: 1px solid #ef4444;
     }
     
     .badge-at-risk {
-        background-color: #fef3c7;
-        color: #92400e;
-        border: 1px solid #fcd34d;
+        background-color: #78350f;
+        color: #fde68a;
+        border: 1px solid #f59e0b;
     }
     
     .badge-scheduled {
-        background-color: #e0e7ff;
-        color: #3730a3;
-        border: 1px solid #818cf8;
+        background-color: #312e81;
+        color: #c7d2fe;
+        border: 1px solid #6366f1;
     }
     
     .badge-completed {
-        background-color: #dcfce7;
-        color: #166534;
-        border: 1px solid #4ade80;
+        background-color: #14532d;
+        color: #bbf7d0;
+        border: 1px solid #22c55e;
     }
     
     .badge-confirmed {
-        background-color: #f0fdf4;
-        color: #15803d;
-        border: 1px solid #86efac;
+        background-color: #064e3b;
+        color: #a7f3d0;
+        border: 1px solid #10b981;
     }
     
-    .card-box {
-        background-color: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 18px;
-        margin-bottom: 16px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* Theme-proof Dark Card for High Contrast */
+    .dark-card {
+        background-color: #0f172a !important;
+        border: 1px solid #334155 !important;
+        border-radius: 12px !important;
+        padding: 16px 20px !important;
+        margin-bottom: 14px !important;
+        color: #f8fafc !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
     }
     
-    .card-box:hover {
+    .slot-card {
+        background-color: #0b1329 !important;
+        border: 1px solid #1e3a8a !important;
+        border-left: 5px solid #10b981 !important;
+        border-radius: 10px !important;
+        padding: 14px 18px !important;
+        margin-bottom: 10px !important;
+        color: #ffffff !important;
+        transition: transform 0.15s ease;
+    }
+    
+    .slot-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+        border-color: #38bdf8 !important;
+    }
+    
+    .event-card {
+        background-color: #111827 !important;
+        border: 1px solid #374151 !important;
+        border-left: 5px solid #818cf8 !important;
+        border-radius: 10px !important;
+        padding: 14px 18px !important;
+        margin-bottom: 10px !important;
+        color: #ffffff !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -148,13 +171,12 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Main Navigation Tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+# Main Navigation Tabs (Removed Architecture & Presentation tab as requested)
+tab1, tab2, tab3, tab4 = st.tabs([
     "📊 Executive Briefing",
     "💬 Agent Q&A Assistant",
     "📅 Calendar Intelligence",
-    "🔎 Evidence & Audit Trail",
-    "📑 Architecture & Slides"
+    "🔎 Evidence & Audit Trail"
 ])
 
 # ==========================================
@@ -211,7 +233,6 @@ with tab1:
         items = [i for i in items if status_filter in i.status]
         
     for item in items:
-        # Badge color logic
         badge_class = "badge-scheduled"
         if "CRITICAL" in item.status:
             badge_class = "badge-critical"
@@ -224,18 +245,18 @@ with tab1:
             
         with st.container():
             st.markdown(f"""
-            <div class="card-box">
+            <div class="dark-card">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:17px; font-weight:700; color:#1e293b;">{item.item}</span>
+                    <span style="font-size:17px; font-weight:700; color:#ffffff;">{item.item}</span>
                     <span class="stat-badge {badge_class}">{item.status}</span>
                 </div>
-                <div style="margin-top:8px; font-size:14px; color:#475569;">
-                    <strong>Owner:</strong> <span style="color:#0f172a;">{item.owner}</span> &nbsp;|&nbsp; 
-                    <strong>Due:</strong> <span style="color:#0f172a;">{item.due}</span> &nbsp;|&nbsp; 
-                    <strong>Priority:</strong> <span style="color:#0f172a;">{item.priority}</span>
+                <div style="margin-top:10px; font-size:14px; color:#cbd5e1;">
+                    <strong style="color:#94a3b8;">Owner:</strong> <span style="color:#38bdf8; font-weight:600;">{item.owner}</span> &nbsp;|&nbsp; 
+                    <strong style="color:#94a3b8;">Due:</strong> <span style="color:#f8fafc; font-weight:600;">{item.due}</span> &nbsp;|&nbsp; 
+                    <strong style="color:#94a3b8;">Priority:</strong> <span style="color:#f8fafc; font-weight:600;">{item.priority}</span>
                 </div>
-                <div style="margin-top:8px; font-size:13px; color:#64748b; background:#f8fafc; padding:10px; border-radius:8px; border-left:3px solid #3b82f6;">
-                    <strong>Evidence & Grounding:</strong> {item.evidence}
+                <div style="margin-top:10px; font-size:13px; color:#94a3b8; background:#1e293b; padding:12px; border-radius:8px; border-left:3px solid #38bdf8;">
+                    <strong style="color:#38bdf8;">Evidence & Grounding:</strong> {item.evidence}
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -297,63 +318,138 @@ with tab2:
                     sources = resp.evidence_sources
                     
             st.markdown(f"""
-            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:12px; padding:20px; margin-top:16px;">
+            <div class="dark-card" style="border:1px solid #0284c7 !important;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-                    <span style="font-weight:700; color:#0f172a; font-size:16px;">Executive Intelligence Response</span>
-                    <span style="font-size:12px; color:#64748b; background:#f1f5f9; padding:4px 8px; border-radius:6px;">Engine: {model}</span>
+                    <span style="font-weight:700; color:#38bdf8; font-size:16px;">Executive Intelligence Response</span>
+                    <span style="font-size:12px; color:#94a3b8; background:#1e293b; padding:4px 10px; border-radius:6px; border:1px solid #334155;">Engine: {model}</span>
                 </div>
-                <div style="font-size:15px; line-height:1.6; color:#1e293b;">
+                <div style="font-size:15px; line-height:1.6; color:#f8fafc;">
                     {answer}
                 </div>
-                <div style="margin-top:16px; font-size:12px; color:#64748b; border-top:1px dashed #e2e8f0; padding-top:8px;">
-                    <strong>Source Grounding Citations:</strong><br/>
+                <div style="margin-top:16px; font-size:12px; color:#94a3b8; border-top:1px dashed #334155; padding-top:10px;">
+                    <strong style="color:#38bdf8;">Source Grounding Citations:</strong><br/>
                     {' • '.join(sources)}
                 </div>
             </div>
             """, unsafe_allow_html=True)
 
 # ==========================================
-# TAB 3: CALENDAR INTELLIGENCE
+# TAB 3: CALENDAR INTELLIGENCE (ENHANCED & HIGH CONTRAST)
 # ==========================================
 with tab3:
-    st.subheader("📅 Calendar Intelligence & Slot Finder")
-    st.caption("Evaluate calendars for Arjun Malhotra and team to find collision-free meeting slots.")
+    st.subheader("📅 Calendar Intelligence & Meeting Slot Discovery")
+    st.caption("Deterministic time analysis across executive calendars. Zero collisions, protected focus blocks.")
     
+    # Controls row
     cal_col1, cal_col2, cal_col3 = st.columns(3)
     with cal_col1:
-        sel_person = st.selectbox("Participant:", ["Arjun Malhotra", "Neha Kapoor", "Raghav Sethi", "Divya Rao"])
+        sel_person = st.selectbox("Select Participant:", ["Arjun Malhotra", "Neha Kapoor", "Raghav Sethi", "Divya Rao"])
     with cal_col2:
-        sel_day = st.selectbox("Day:", ["Mon 21 Sep", "Tue 22 Sep", "Wed 23 Sep", "Thu 24 Sep", "Fri 25 Sep"], index=3)
+        sel_day = st.selectbox("Select Scenario Day:", ["Mon 21 Sep", "Tue 22 Sep", "Wed 23 Sep", "Thu 24 Sep", "Fri 25 Sep"], index=3)
     with cal_col3:
-        sel_duration = st.slider("Slot Duration (minutes):", min_value=15, max_value=60, value=30, step=15)
+        sel_duration = st.slider("Required Slot Length (Minutes):", min_value=15, max_value=60, value=30, step=15)
         
     slots = find_free_slots(person=sel_person, day=sel_day, duration_minutes=sel_duration)
     events = get_person_events(person=sel_person, day=sel_day)
     
+    # Overview Stat Badges
+    st.markdown(f"""
+    <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:14px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+            <span style="color:#94a3b8; font-size:13px; font-weight:600;">ACTIVE SCHEDULE:</span> 
+            <strong style="color:#ffffff; font-size:15px; margin-left:6px;">{sel_person}</strong> 
+            <span style="color:#64748b; margin:0 8px;">|</span>
+            <span style="color:#38bdf8; font-weight:600;">{sel_day} (09:00 – 18:00)</span>
+        </div>
+        <div>
+            <span style="background:#0f172a; color:#818cf8; border:1px solid #6366f1; padding:4px 12px; border-radius:15px; font-size:13px; font-weight:700; margin-right:8px;">
+                📅 {len(events)} Scheduled Events
+            </span>
+            <span style="background:#064e3b; color:#34d399; border:1px solid #10b981; padding:4px 12px; border-radius:15px; font-size:13px; font-weight:700;">
+                🟢 {len(slots)} Free Windows Found
+            </span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
     col_sched, col_free = st.columns([1, 1])
+    
+    # Left Column: Scheduled Events
     with col_sched:
-        st.markdown(f"#### 📆 Scheduled Events ({sel_person} on {sel_day})")
+        st.markdown(f"#### 🔒 Scheduled & Protected Events ({len(events)})")
         if not events:
-            st.info("No events scheduled on this day.")
+            st.info(f"No events scheduled for {sel_person} on {sel_day}.")
         else:
             for ev in events:
+                is_blocked = "block" in ev['title'].lower() or "prep" in ev['title'].lower() or "sync" in ev['title'].lower()
+                border_color = "#f59e0b" if is_blocked else "#818cf8"
+                badge_text = "🔒 Focus / Blocked" if is_blocked else "👥 Meeting"
+                badge_bg = "rgba(245, 158, 11, 0.15)" if is_blocked else "rgba(129, 140, 248, 0.15)"
+                badge_color = "#fcd34d" if is_blocked else "#c7d2fe"
+                
                 st.markdown(f"""
-                <div style="background:#f8fafc; border-left:4px solid #6366f1; padding:10px 14px; border-radius:6px; margin-bottom:8px;">
-                    <strong>{ev['start']} – {ev['end']}</strong>: {ev['title']}
+                <div class="event-card" style="border-left: 5px solid {border_color} !important;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:16px; font-weight:700; color:#ffffff;">{ev['title']}</span>
+                        <span style="background:{badge_bg}; color:{badge_color}; border:1px solid {border_color}; padding:2px 10px; border-radius:12px; font-size:11px; font-weight:700;">
+                            {badge_text}
+                        </span>
+                    </div>
+                    <div style="margin-top:8px; display:flex; align-items:center; gap:8px;">
+                        <span style="background:#1e293b; color:#38bdf8; padding:4px 10px; border-radius:6px; font-family:monospace; font-weight:700; font-size:13px;">
+                            ⏰ {ev['start']} – {ev['end']}
+                        </span>
+                        <span style="color:#94a3b8; font-size:13px;">
+                            Duration: {int((datetime.strptime(ev['end'], '%H:%M') - datetime.strptime(ev['start'], '%H:%M')).total_seconds() / 60)} mins
+                        </span>
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
                 
+    # Right Column: Available Free Slots (HIGH CONTRAST & CLEARLY VISIBLE)
     with col_free:
-        st.markdown(f"#### 🟢 Available {sel_duration}-Minute Free Slots")
+        st.markdown(f"#### 🟢 Available {sel_duration}-Minute Slots ({len(slots)})")
         if not slots:
-            st.warning("No free slots found during standard working hours (09:00 - 18:00).")
+            st.error(f"No available {sel_duration}-minute slots found between 09:00 and 18:00.")
         else:
-            for s in slots:
-                st.markdown(f"""
-                <div style="background:#f0fdf4; border-left:4px solid #22c55e; padding:10px 14px; border-radius:6px; margin-bottom:8px;">
-                    <strong>{s['start']} – {s['end']}</strong> &nbsp;({sel_duration} min window)
-                </div>
-                """, unsafe_allow_html=True)
+            # Slot filter chips
+            filter_mode = st.radio(
+                "Filter Slots:",
+                ["All Open Slots", "Morning (09:00 - 13:00)", "Afternoon (13:00 - 18:00)"],
+                horizontal=True
+            )
+            
+            filtered_slots = slots
+            if filter_mode == "Morning (09:00 - 13:00)":
+                filtered_slots = [s for s in slots if s['start'] < "13:00"]
+            elif filter_mode == "Afternoon (13:00 - 18:00)":
+                filtered_slots = [s for s in slots if s['start'] >= "13:00"]
+                
+            if not filtered_slots:
+                st.warning(f"No open slots in the selected {filter_mode} window.")
+            else:
+                for idx, s in enumerate(filtered_slots, 1):
+                    st.markdown(f"""
+                    <div class="slot-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <span style="background:#064e3b; color:#34d399; font-weight:800; padding:4px 10px; border-radius:6px; font-size:13px;">
+                                    #{idx}
+                                </span>
+                                <span style="font-size:17px; font-weight:800; color:#38bdf8; letter-spacing:0.5px; font-family:monospace;">
+                                    ⏰ {s['start']} – {s['end']}
+                                </span>
+                            </div>
+                            <span style="background:#064e3b; color:#34d399; border:1px solid #10b981; padding:4px 12px; border-radius:12px; font-size:12px; font-weight:700;">
+                                ✓ Available
+                            </span>
+                        </div>
+                        <div style="margin-top:8px; font-size:13px; color:#cbd5e1; display:flex; justify-content:space-between;">
+                            <span>Window Length: <strong style="color:#ffffff;">{sel_duration} minutes</strong></span>
+                            <span style="color:#10b981; font-weight:600;">✓ Conflict-Free</span>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
 
 # ==========================================
 # TAB 4: EVIDENCE & AUDIT TRAIL
@@ -372,24 +468,38 @@ with tab4:
         st.markdown(f"**Attendees:** {', '.join(mt['attendees'])}")
         st.markdown("---")
         for d in mt["dialogue"]:
-            st.markdown(f"**{d['speaker']}:** {d['text']}")
+            st.markdown(f"""
+            <div style="background:#0f172a; border:1px solid #334155; border-radius:8px; padding:12px 16px; margin-bottom:8px; color:#ffffff;">
+                <strong style="color:#38bdf8;">{d['speaker']}:</strong> <span style="color:#f8fafc;">"{d['text']}"</span>
+            </div>
+            """, unsafe_allow_html=True)
             
     elif ev_choice == "Email Threads":
         for thread in raw_data["email_threads"]:
             with st.expander(f"✉️ Thread: {thread['subject']} (5 Emails)", expanded=False):
                 for em in thread["emails"]:
-                    st.markdown(f"**#{em['index']} | {em['timestamp']}**")
-                    st.markdown(f"*From:* `{em['from']}` → *To:* `{em['to']}`")
-                    st.markdown(f"> \"{em['body']}\"")
-                    st.markdown("---")
+                    st.markdown(f"""
+                    <div style="background:#0f172a; border:1px solid #334155; border-radius:8px; padding:14px; margin-bottom:10px; color:#ffffff;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                            <span style="color:#38bdf8; font-weight:700;">#{em['index']} | {em['timestamp']}</span>
+                            <span style="color:#94a3b8; font-size:12px;">From: {em['from']} → To: {em['to']}</span>
+                        </div>
+                        <div style="color:#f8fafc; font-size:14px; line-height:1.5;">
+                            "{em['body']}"
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
                     
     elif ev_choice == "Voice Notes":
         st.markdown("### 🎙️ Personal Voice Memos (Arjun Malhotra)")
         st.caption("Dictated reminders recorded for himself. Treated as commitments, not external requests.")
         for vn in raw_data["voice_notes"]:
-            st.markdown(f"**{vn['context']}**")
-            st.info(f"\"{vn['transcript']}\"")
-            st.markdown("---")
+            st.markdown(f"""
+            <div style="background:#0f172a; border:1px solid #334155; border-left:4px solid #a855f7; border-radius:8px; padding:16px; margin-bottom:12px; color:#ffffff;">
+                <div style="color:#c084fc; font-weight:700; font-size:15px; margin-bottom:6px;">🎙️ {vn['context']}</div>
+                <div style="color:#f8fafc; font-size:14px; font-style:italic;">"{vn['transcript']}"</div>
+            </div>
+            """, unsafe_allow_html=True)
             
     elif ev_choice == "SQLite Audit Log":
         st.markdown("### 🛡️ Real-Time SQLite Audit Log (`agent_audit.db`)")
@@ -398,58 +508,6 @@ with tab4:
             st.info("No queries logged yet. Ask questions in the Agent Q&A tab to populate audit records.")
         else:
             st.dataframe(logs, use_container_width=True)
-
-# ==========================================
-# TAB 5: ARCHITECTURE & SLIDE DECK
-# ==========================================
-with tab5:
-    st.subheader("📑 Architecture, Design Decisions & 10-Slide Deck")
-    
-    st.markdown("""
-    ### 🏛️ Complete System Architecture
-    ```mermaid
-    flowchart TD
-        DP[Assignment Data Pack: Transcripts, Calendars, 5x5 Emails, Voice Notes] --> DP_NORM[Data Normalization & Pydantic Validation]
-        DP_NORM --> CHROMA[ChromaDB Vector Store + Sentence-Transformers]
-        DP_NORM --> DET_RULES[Deterministic Grounding & Ambiguity Engine]
-        
-        USER[Arjun Malhotra / Evaluator] --> UI[Streamlit UI Dashboard]
-        USER --> API[FastAPI REST API / Vercel Serverless]
-        
-        API --> CORE[Core Reasoning Engine]
-        UI --> CORE
-        
-        CORE --> DET_RULES
-        CORE --> RAG[ChromaDB Retriever]
-        RAG --> LC[LangChain Prompt Chain]
-        LC --> GEMINI[Google Gemini 1.5 Flash]
-        
-        CORE --> SQLITE[(SQLite Audit Log agent_audit.db)]
-        CORE --> CAL_ENG[Deterministic Calendar Engine]
-    ```
-    """)
-    
-    st.markdown("---")
-    st.markdown("### 💡 Critical Evaluation Design Decisions")
-    st.markdown("""
-    1. **Mumbai Office Lease Renewal (Anti-Hallucination Safe Mode)**:
-       - *Ground Truth Fact*: Facilities sent two reminders (Mon 10:15 AM & Thu 4:00 PM). Deadline: Friday 25 Sep EOD.
-       - *Trap*: Divya suggested Facilities might handle it in the sync.
-       - *Agent Guardrail*: Arjun explicitly said *"flag it, don't assume"*. On Thu 4:45 PM Raghav emailed it remains unowned. Arjun noted *"someone needs to own that, I don't think it's me"*.
-       - *Decision*: Agent unequivocally flags it as **UNASSIGNED / CRITICAL BLOCKER**.
-    2. **Vendor List Deadline Drift**:
-       - Promised Monday -> moved to Tuesday morning -> moved to Wednesday morning -> Raghav follow-up at 8:45 AM Wednesday. Marked **AT RISK / OPEN**.
-    3. **Q3 Campaign Deck Review**:
-       - Shifted from Wednesday to Thursday 9:30 AM before Arjun's Board Prep block. Marked **SCHEDULED**.
-    4. **July Expense Variance Report**:
-       - Delivered Wednesday at 6:00 PM and acknowledged by Arjun at 6:10 PM. Marked **COMPLETED**.
-    5. **Meridian Logistics Reschedule**:
-       - Reconfirmed for Wednesday at 3:00 PM. Marked **CONFIRMED**.
-    """)
-    
-    st.markdown("---")
-    st.markdown("### 📽️ 10-Slide PPT Presentation")
-    st.info("Slides are available in `PPT_10_SLIDES.md`, interactive HTML viewer in `presentation.html`, and generated as a PowerPoint presentation `executive_productivity_agent_presentation.pptx`.")
 
 # Footer
 st.markdown("---")
