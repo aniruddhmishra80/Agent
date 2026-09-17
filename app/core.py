@@ -361,12 +361,6 @@ def ask_agent(query: str, mode: str = "hybrid") -> QueryResponse:
             from langchain_google_genai import ChatGoogleGenerativeAI
             from langchain_core.messages import SystemMessage, HumanMessage
 
-            llm = ChatGoogleGenerativeAI(
-                model=GEMINI_MODEL,
-                google_api_key=GEMINI_API_KEY,
-                temperature=0.0
-            )
-
             system_instruction = (
                 "You are an Executive Productivity AI Agent for Arjun Malhotra (VP Sales) at Veridian Corp. "
                 "The scenario week is strictly Monday 21 Sep 2026 to Friday 25 Sep 2026.\n"
@@ -377,22 +371,48 @@ def ask_agent(query: str, mode: str = "hybrid") -> QueryResponse:
                 "Do NOT state that Facilities or anyone else owns it, because Arjun explicitly stated 'flag it, don't assume' and Raghav noted on Thursday that it remains unowned.\n"
                 "4. Be crisp, professional, executive-ready, and cite your specific sources (emails, transcript, calendar, voice notes)."
             )
-
             user_prompt = f"RETRIEVED SOURCE EVIDENCE:\n{context_text}\n\nEXECUTIVE QUERY:\n{query}"
-            
-            response = llm.invoke([
-                SystemMessage(content=system_instruction),
-                HumanMessage(content=user_prompt)
-            ])
-            
-            answer_text = response.content
+
+            models_to_try = [GEMINI_MODEL, "gemini-3.6-flash", "gemini-flash-latest"]
+            seen_models = []
+            response = None
+            used_model = GEMINI_MODEL
+            for m in models_to_try:
+                if m in seen_models:
+                    continue
+                seen_models.append(m)
+                try:
+                    llm = ChatGoogleGenerativeAI(
+                        model=m,
+                        google_api_key=GEMINI_API_KEY,
+                        temperature=0.0
+                    )
+                    response = llm.invoke([
+                        SystemMessage(content=system_instruction),
+                        HumanMessage(content=user_prompt)
+                    ])
+                    used_model = m
+                    break
+                except Exception as m_err:
+                    print(f"[Gemini model '{m}' call failed, trying next]: {m_err}")
+                    continue
+
+            if response is None:
+                raise RuntimeError("All Gemini model attempts failed")
+
+            raw_content = response.content
+            if isinstance(raw_content, list):
+                answer_text = "".join([c.get("text", str(c)) if isinstance(c, dict) else str(c) for c in raw_content])
+            else:
+                answer_text = str(raw_content)
+
             resp = QueryResponse(
                 query=query,
                 answer=answer_text,
                 status="SUCCESS",
                 confidence=0.98,
                 evidence_sources=evidence_sources,
-                model_used=f"LangChain + {GEMINI_MODEL} (RAG)"
+                model_used=f"LangChain + {used_model} (RAG)"
             )
             log_audit(query, resp.answer, resp.model_used)
             return resp
