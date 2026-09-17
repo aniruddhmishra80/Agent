@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Productivity Agent - System Architecture</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 18mm 16mm 18mm 16mm;
+            @bottom-right {
+                content: "Page " counter(page);
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                font-size: 9pt;
+                color: #64748b;
+            }
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #0f172a;
+            background: #ffffff;
+            line-height: 1.55;
+            font-size: 10pt;
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #ffffff;
+            padding: 24px 28px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid #0284c7;
+            padding: 3px 10px;
+            border-radius: 14px;
+            font-size: 8.5pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 20pt;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 11pt;
+            margin-bottom: 14px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            border-top: 1px solid #334155;
+            padding-top: 12px;
+            font-size: 8.5pt;
+        }
+        .meta-item strong { color: #38bdf8; display: block; font-size: 7.5pt; text-transform: uppercase; }
+        .meta-item span { color: #f8fafc; font-weight: 600; }
+
+        h2 {
+            font-size: 13pt;
+            font-weight: 700;
+            color: #0f172a;
+            border-bottom: 2px solid #0284c7;
+            padding-bottom: 4px;
+            margin-top: 22px;
+            margin-bottom: 12px;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            font-size: 11pt;
+            font-weight: 700;
+            color: #1e293b;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            page-break-after: avoid;
+        }
+
+        p { margin-bottom: 8px; color: #334155; text-align: justify; }
+
+        /* Architecture Diagram Box */
+        .diagram-container {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 16px;
+            margin: 14px 0;
+            text-align: center;
+            page-break-inside: avoid;
+        }
+
+        .arch-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 8.5pt;
+        }
+
+        .flow-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .flow-card {
+            flex: 1;
+            background: #ffffff;
+            border: 1px solid #94a3b8;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+        .flow-card.accent-blue { border-top: 4px solid #0284c7; }
+        .flow-card.accent-green { border-top: 4px solid #10b981; }
+        .flow-card.accent-purple { border-top: 4px solid #8b5cf6; }
+        .flow-card.accent-amber { border-top: 4px solid #f59e0b; }
+
+        .flow-card strong { font-size: 9pt; color: #0f172a; display: block; margin-bottom: 3px; }
+        .flow-card p { font-size: 7.8pt; color: #475569; margin: 0; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 8.5pt;
+            page-break-inside: avoid;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 7px 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-weight: 700;
+        }
+        tr:nth-child(even) { background-color: #f8fafc; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 7.5pt;
+            font-weight: 700;
+        }
+        .badge-critical { background: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+        .badge-at-risk { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+        .badge-scheduled { background: #e0e7ff; color: #3730a3; border: 1px solid #818cf8; }
+        .badge-completed { background: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .badge-confirmed { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; }
+
+        .callout-box {
+            background: #f0f9ff;
+            border-left: 4px solid #0284c7;
+            padding: 10px 14px;
+            border-radius: 0 6px 6px 0;
+            margin: 12px 0;
+            font-size: 8.5pt;
+            page-break-inside: avoid;
+        }
+        .callout-box strong { color: #0369a1; }
+
+        .warning-box {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 10px 14px;
+            border-radius: 0 6px 6px 0;
+            margin: 12px 0;
+            font-size: 8.5pt;
+            page-break-inside: avoid;
+        }
+        .warning-box strong { color: #b45309; }
+
+        .page-break { page-break-before: always; }
+        
+        .code-block {
+            font-family: 'JetBrains Mono', monospace;
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 8pt;
+            line-height: 1.4;
+            margin: 10px 0;
+            page-break-inside: avoid;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Card -->
+    <div class="header-card">
+        <span class="header-badge">AIONOS Batch 2027 • Technical Whitepaper</span>
+        <h1>Executive Productivity Agent</h1>
+        <div class="subtitle">Complete System Architecture, Data Flows, and Guardrail Specifications</div>
+        <div class="meta-grid">
+            <div class="meta-item">
+                <strong>Candidate</strong>
+                <span>Aniruddh Mishra</span>
+            </div>
+            <div class="meta-item">
+                <strong>Institution</strong>
+                <span>Bennett University (B.Tech CSE)</span>
+            </div>
+            <div class="meta-item">
+                <strong>Target User</strong>
+                <span>Arjun Malhotra (VP Sales)</span>
+            </div>
+            <div class="meta-item">
+                <strong>Scenario Horizon</strong>
+                <span>21–25 September 2026</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. Executive Summary -->
+    <h2>1. Executive Summary & Design Philosophy</h2>
+    <p>
+        The <strong>Executive Productivity Agent</strong> is an autonomous AI assistant engineered for enterprise sales leadership. In corporate environments, commitments, deliverables, and calendar constraints are highly fragmented across meeting transcripts, asynchronous email chains, personal voice memos, and overlapping calendar schedules.
+    </p>
+    <p>
+        Standard generative LLM agents are prone to catastrophic hallucinations when tasked with high-stakes executive operations—either inventing deadlines, misidentifying deliverable owners, or fabricating progress. To solve this, our system introduces a <strong>Dual-Engine Architecture</strong>:
+    </p>
+    <ul>
+        <li><strong>Deterministic Precedence Engine:</strong> Enforces zero-invention mathematical and rule-based guarantees over legally binding deliverables, deadlines, and unowned blockers.</li>
+        <li><strong>Grounded Semantic RAG Engine:</strong> Leverages LangChain with ChromaDB dense vector embeddings and Google Gemini 1.5/3.6 Flash (temperature = 0.0) strictly constrained to provided source evidence.</li>
+    </ul>
+
+    <!-- 2. System Architecture -->
+    <h2>2. End-to-End System Architecture</h2>
+    <div class="diagram-container">
+        <div class="arch-flow">
+            <!-- Ingestion Tier -->
+            <div class="flow-row">
+                <div class="flow-card accent-blue">
+                    <strong>1. Multi-Modal Data Ingestion</strong>
+                    <p>• Leadership Sync Transcript (4 attendees)<br>• 4 Team Calendars (Arjun, Neha, Raghav, Divya)<br>• 5 Email Threads (25 raw messages)<br>• 2 Personal Voice Notes (Arjun dictated)</p>
+                </div>
+                <div class="flow-card accent-green">
+                    <strong>2. Schema Normalization (Pydantic)</strong>
+                    <p>• Granular text chunking & metadata tagging<br>• Speaker attribution & timestamp parsing<br>• Structured Commitment and Event schemas</p>
+                </div>
+            </div>
+
+            <!-- Core Reasoning Tier -->
+            <div class="flow-row">
+                <div class="flow-card accent-purple">
+                    <strong>3. Deterministic Safety Layer</strong>
+                    <p>• Explicit check for high-risk items (Mumbai lease)<br>• Rejection of inferred or speculative owners<br>• Timeline deadline drift tracking (Vendor list)</p>
+                </div>
+                <div class="flow-card accent-amber">
+                    <strong>4. LangChain + RAG Retrieval</strong>
+                    <p>• ChromaDB Persistent Vector Store<br>• Dense Sentence-Transformers Embeddings<br>• Zero-temperature Google Gemini reasoning</p>
+                </div>
+            </div>
+
+            <!-- Serving Tier -->
+            <div class="flow-row">
+                <div class="flow-card accent-blue">
+                    <strong>5. Serving & Interface Layer</strong>
+                    <p>• FastAPI REST API (<span class="code-font">/api/brief</span>, <span class="code-font">/api/query</span>, <span class="code-font">/api/calendar</span>)<br>• Streamlit Executive Dashboard (High-contrast, responsive UI)<br>• Vercel Serverless Function deployment</p>
+                </div>
+                <div class="flow-card accent-green">
+                    <strong>6. Governance & Audit Logging</strong>
+                    <p>• SQLite persistent storage (<span class="code-font">agent_audit.db</span>)<br>• Full query history, timestamps, confidence scores<br>• Model provenance & source citations</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Tracked Commitments Ledger -->
+    <h2>3. Executive Commitment Ledger (Ground Truth Matrix)</h2>
+    <p>
+        The system continuously synthesizes the 5 canonical workstreams from the scenario dataset into a real-time ledger:
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 12%;">ID</th>
+                <th style="width: 25%;">Deliverable</th>
+                <th style="width: 18%;">Owner</th>
+                <th style="width: 18%;">Due Date</th>
+                <th style="width: 15%;">Status</th>
+                <th style="width: 12%;">Priority</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>COM-01</strong></td>
+                <td>Updated Vendor List</td>
+                <td>Arjun Malhotra</td>
+                <td>Wed 23 Sep morning</td>
+                <td><span class="status-badge badge-at-risk">AT RISK / OPEN</span></td>
+                <td>HIGH</td>
+            </tr>
+            <tr>
+                <td><strong>COM-02</strong></td>
+                <td>Q3 Campaign Deck Review</td>
+                <td>Arjun & Neha Kapoor</td>
+                <td>Thu 24 Sep, 9:30 AM</td>
+                <td><span class="status-badge badge-scheduled">SCHEDULED</span></td>
+                <td>HIGH</td>
+            </tr>
+            <tr>
+                <td><strong>COM-03</strong></td>
+                <td>July Expense Variance Report</td>
+                <td>Divya Rao</td>
+                <td>Wed 23 Sep evening</td>
+                <td><span class="status-badge badge-completed">COMPLETED</span></td>
+                <td>MEDIUM</td>
+            </tr>
+            <tr>
+                <td><strong>COM-04</strong></td>
+                <td>Meridian Logistics Client Call</td>
+                <td>Arjun & Priya Nair</td>
+                <td>Wed 23 Sep, 3:00 PM</td>
+                <td><span class="status-badge badge-confirmed">CONFIRMED</span></td>
+                <td>HIGH</td>
+            </tr>
+            <tr>
+                <td><strong>COM-05</strong></td>
+                <td>Mumbai Office Lease Renewal</td>
+                <td><strong>UNASSIGNED</strong></td>
+                <td>Fri 25 Sep, End of Day</td>
+                <td><span class="status-badge badge-critical">CRITICAL / UNOWNED</span></td>
+                <td>CRITICAL</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- 4. Deep Dive Case Studies -->
+    <h2>4. Critical Evaluation Case Studies & Guardrail Logic</h2>
+
+    <h3>Case Study 1: The Mumbai Office Lease Renewal (Safe Ambiguity Handling)</h3>
+    <div class="warning-box">
+        <strong>The Potential Trap:</strong> Facilities sent company-wide reminders stating an authorized signature is due Friday 25 Sep EOD. In the Monday sync, Divya speculated: <em>"I think that's supposed to be Facilities, but I haven't seen anyone pick it up."</em>
+    </div>
+    <p>
+        <strong>Executive Command:</strong> Arjun explicitly intervened: <em>"Okay, flag it, don't assume."</em><br>
+        <strong>Corroborating Evidence:</strong>
+    </p>
+    <ul>
+        <li>On Wednesday 9:30 AM, Divya emailed that the task is not on her end and typically sits with Facilities directly, but neither confirmed ownership.</li>
+        <li>On Thursday 4:45 PM, Raghav emailed Arjun: <em>"This is now one day out and still unowned — can you confirm who’s handling it?"</em></li>
+        <li>In Voice Note 1, Arjun noted: <em>"Someone needs to own that, I don't think it's me."</em></li>
+    </ul>
+    <div class="callout-box">
+        <strong>Agent Verdict:</strong> The agent strictly declares ownership as <strong>UNASSIGNED / CRITICAL BLOCKER</strong>. It explicitly rejects Facilities or anyone else as the owner, directly preventing an unassigned corporate liability from causing lease forfeiture.
+    </div>
+
+    <h3>Case Study 2: Vendor List (Dynamic Deadline Drift Tracking)</h3>
+    <p>
+        Tracking deadlines across informal conversational updates is a core capability:
+    </p>
+    <ul>
+        <li><strong>Monday 9:00 AM:</strong> Arjun commits to sending Raghav the updated vendor list by end of day Tuesday.</li>
+        <li><strong>Monday 5:40 PM:</strong> Arjun emails Raghav: <em>"Running behind, will send first thing tomorrow morning instead."</em></li>
+        <li><strong>Tuesday 6:30 PM:</strong> Arjun emails: <em>"Sorry, got pulled into board prep — will send by tomorrow (Wednesday) morning for sure."</em></li>
+        <li><strong>Wednesday 8:45 AM:</strong> Raghav follows up: <em>"Just checking — still good for this morning?"</em></li>
+    </ul>
+    <p>
+        <strong>Agent Verdict:</strong> Because no subsequent record confirms delivery, the agent marks the item as <strong>AT RISK / OPEN (Overdue)</strong> and surfaces it as an immediate executive action item.
+    </p>
+
+    <!-- 5. Calendar Intelligence -->
+    <h2>5. Deterministic Calendar Intelligence Engine</h2>
+    <p>
+        Rather than relying on non-deterministic LLM arithmetic, the calendar engine uses mathematical set interval subtraction within executive working hours [09:00, 18:00]:
+    </p>
+    <div class="code-block">
+Available Free Intervals = [09:00, 18:00] \ ⋃ (Event_Start_i, Event_End_i)
+    </div>
+    <p>
+        <strong>Protected Blocks on Thursday 24 Sep:</strong>
+    </p>
+    <ul>
+        <li><strong>Board Prep Session (09:00 – 10:00 AM):</strong> Protected as an inviolable focus window.</li>
+        <li><strong>Hiring Panel — Sales Associate (16:00 – 17:00 PM):</strong> Protected from collisions.</li>
+        <li><strong>Neha's Deck Review (09:30 AM):</strong> Correctly synchronized before Board Prep.</li>
+        <li><strong>Computed Free Windows:</strong> The engine accurately identifies 14 discrete 30-minute meeting slots between 10:00 and 16:00 and between 17:00 and 18:00.</li>
+    </ul>
+
+    <!-- 6. Governance & Deployment -->
+    <h2>6. Governance, Observability & Cloud Deployment</h2>
+    <p>
+        <strong>1. Audit Logging (`agent_audit.db`):</strong> Every prompt, model engine, generated answer, and timestamp is permanently written to an SQLite database, ensuring total corporate accountability.
+    </p>
+    <p>
+        <strong>2. Vercel Serverless Edge Architecture:</strong> The FastAPI backend is packaged via <span class="code-font">vercel.json</span> and <span class="code-font">api/index.py</span> with a lightweight bundle (~38 MB), comfortably below Vercel's 500 MB serverless ceiling.
+    </p>
+    <p>
+        <strong>3. Streamlit Cloud / Render Hosting:</strong> Containerized interactive frontend deployed with one-click GitHub synchronization, offering live access to evaluators worldwide.
+    </p>
+
+</body>
+</html>
